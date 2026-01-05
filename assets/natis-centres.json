@@ -1,0 +1,20 @@
+[
+  { "name": "Roads Authority - Windhoek (HQ)", "lat": -22.578826, "lng": 17.081287, "address": "C3CJ+HFG, Windhoek", "note": "Headquarters" },
+  { "name": "NATIS Centre - Walvis Bay", "lat": -22.942844, "lng": 14.519481, "address": "3G49+RPX, Corner of Theo Ben Gurirab and R, Walvis Bay", "note": "Coastal centre" },
+  { "name": "NATIS Centre - Swakopmund", "lat": -22.669372, "lng": 14.531647, "address": "8GJJ+7PF, Henties Bay Rd, Swakopmund", "note": "Coastal centre" },
+  { "name": "NATIS Centre - Keetmanshoop", "lat": -26.594242, "lng": 18.134751, "address": "C44M+6Q, Keetmanshoop", "note": "Southern hub" },
+  { "name": "NATIS Centre - Tsumeb", "lat": -22.448409, "lng": 18.963216, "address": "QMFX+6CX, B1, Tsumeb", "note": "Northern services" },
+  { "name": "NATIS Centre - Gobabis", "lat": -22.448485, "lng": 18.963347, "address": "HX27+JFF, Gobabis", "note": "Eastern services" },
+  { "name": "NATIS Centre - Oshakati", "lat": -17.784417, "lng": 15.738434, "address": "6P8Q+49Q, Oshakati", "note": "Northern hub" },
+  { "name": "NATIS Centre - Rundu", "lat": -17.922518, "lng": 19.762873, "address": "3QH7+24X, Rundu", "note": "Eastern hub" },
+  { "name": "NATIS Centre - Ondangwa", "lat": -17.91344, "lng": 15.97381, "address": "3XPF+JG7, Ondangwa", "note": "Northern region" },
+  { "name": "NATIS Centre - Otjiwarongo", "lat": -20.45793, "lng": 16.63957, "address": "GJRQ+RR6, Otjiwarongo", "note": "Central region" },
+  { "name": "NATIS Centre - Katima Mulilo", "lat": -17.5152588, "lng": 24.2685501, "address": "NaTIS, F7M9+QCX, Katima Mulilo", "note": "Far east" },
+  { "name": "NATIS Centre - Luderitz", "lat": -26.65823, "lng": 15.17354, "address": "85RF+MCM, Luderitz", "note": "Southern coast" },
+  { "name": "NATIS Centre - Mariental", "lat": -24.61226, "lng": 17.96753, "address": "9XQ8+3XF, Mariental", "note": "Central south" },
+  { "name": "NATIS Centre - Grootfontein", "lat": -19.57240, "lng": 18.09862, "address": "C3HX+29H, Grootfontein", "note": "Central north" },
+  { "name": "NATIS Centre - Okahandja", "lat": -21.979826, "lng": 16.906349, "address": "2WC4+2G9, West St, Okahandja", "note": "Central region" },
+  { "name": "NATIS Centre - Henties Bay", "lat": -22.11539, "lng": 14.28250, "address": "V7MJ+VXG, Stand, Henties Bay", "note": "Coastal town" },
+  { "name": "NATIS Centre - Rehoboth", "lat": -23.31704, "lng": 17.07449, "address": "M3MF+5PP, B1, Rehoboth", "note": "Central south" },
+  { "name": "NATIS Centre - Keetmanshoop (southern office)", "lat": -26.5837, "lng": 18.1333, "address": "Keetmanshoop", "note": "Duplicate entry helps users find regional office" }
+]

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 72 72" role="img" aria-label="Report thumbnail">
+  <defs>
+    <linearGradient id="g2" x1="0" x2="1">
+      <stop offset="0%" stop-color="#004085"/>
+      <stop offset="100%" stop-color="#007bff"/>
+    </linearGradient>
+  </defs>
+  <rect width="72" height="72" rx="8" fill="url(#g2)" />
+  <rect x="12" y="18" width="48" height="36" rx="6" fill="#fff" opacity="0.06" />
+  <rect x="12" y="26" width="48" height="12" rx="3" fill="#fff" opacity="0.12" />
+  <g stroke="#fff" stroke-width="2" stroke-linecap="round">
+    <line x1="36" y1="30" x2="36" y2="42" stroke-dasharray="4 6" />
+  </g>
+  <text x="12" y="60" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#fff">Report</text>
+</svg>

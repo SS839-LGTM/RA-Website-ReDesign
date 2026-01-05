@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Run axe on local pages</title>
+</head>
+<body>
+  <h1>Local axe runner</h1>
+  <p>Open the console (F12) and run the script below to inspect the page you're on.</p>
+  <script src="../assets/axe.min.js"></script>
+  <script>
+    (async function(){
+      try{
+        const results = await axe.run();
+        console.log('Axe results:', results);
+        const pre = document.createElement('pre');
+        pre.textContent = JSON.stringify(results, null, 2);
+        document.body.appendChild(pre);
+      }catch(e){
+        console.error(e);
+      }
+    })();
+  </script>
+</body>
+</html>

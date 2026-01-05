@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Roads Authority of Namibia - Constructing and maintaining Namibia's road network for safety and economic development">
+    <title>Roads Authority of Namibia | Building Safer Roads</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS for interactive NATIS map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="icon" type="image/x-icon" href="assets/logo.png">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div id="intro-overlay" class="intro-overlay" aria-hidden="true" role="region" aria-label="Intro animation">
+        <button id="skip-intro" class="skip-intro" aria-label="Skip introduction">Skip intro</button>
+        <video id="intro-video" class="intro-video" autoplay muted playsinline preload="auto" src="https://assets.awwwards.com/awards/element/2024/11/6736471660018422969872.mp4"></video>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.png" alt="RA Logo" id="logo-img">
+                <span class="logo-text">Roads Authority<br><small>of Namibia</small></span>
+            </a>
+            
+            <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html#home" class="nav-link active">Home</a></li>
+                <li class="nav-item nav-dropdown">
+                  <button class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="about-menu">About RA <span class="caret">▾</span></button>
+                  <ul class="dropdown-menu" id="about-menu" role="menu" aria-label="About RA menu">
+                    <li role="none"><a role="menuitem" href="background.html" class="nav-link">Background</a></li>
+                    <li role="none"><a role="menuitem" href="corporate.html" class="nav-link">Corporate</a></li>
+                    <li role="none"><a role="menuitem" href="board.html" class="nav-link">Board</a></li>
+                    <li role="none"><a role="menuitem" href="committee.html" class="nav-link">Executive Committee</a></li>
+                    <li role="none"><a role="menuitem" href="strategy.html" class="nav-link">Strategy</a></li>
+                  </ul>
+                </li>
+                <li><a href="index.html#network" class="nav-link">Road Network</a></li>
+                <li><a href="permits.html" class="nav-link">Permits</a></li>
+                <li><a href="weighbridge.html" class="nav-link">Weighbridge</a></li>
+                <li><a href="index.html#natis" class="nav-link">NATIS Centres</a></li>
+                <li><a href="news.html" class="nav-link">News</a></li>
+                <li><a href="board.html" class="nav-link">Board</a></li>
+                <li><a href="committee.html" class="nav-link">Executive Committee</a></li>
+                <li><a href="strategy.html" class="nav-link">Strategy</a></li>
+                <li class="nav-item nav-dropdown">
+                  <button class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="procurement-menu">Procurement <span class="caret">▾</span></button>
+                  <ul class="dropdown-menu" id="procurement-menu" role="menu" aria-label="Procurement menu">
+                    <li role="none"><a role="menuitem" href="legislation.html" class="nav-link">Legislation</a></li>
+                    <li role="none"><a role="menuitem" href="procurement-plan.html" class="nav-link">Procurement Plan</a></li>
+                    <li role="none"><a role="menuitem" href="open-bids.html" class="nav-link">Open Bids</a></li>
+                    <li role="none"><a role="menuitem" href="register.html" class="nav-link">Register</a></li>
+                    <li role="none"><a role="menuitem" href="awards.html" class="nav-link">Awards</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item nav-dropdown">
+                  <button class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="careers-menu">Careers <span class="caret">▾</span></button>
+                  <ul class="dropdown-menu" id="careers-menu" role="menu" aria-label="Careers menu">
+                    <li role="none"><a role="menuitem" href="vacancies.html" class="nav-link">Vacancies</a></li>
+                    <li role="none"><a role="menuitem" href="bursaries.html" class="nav-link">Bursaries</a></li>
+                    <li role="none"><a role="menuitem" href="internship.html" class="nav-link">Internships</a></li>
+                  </ul>
+                </li>
+                <li><button class="search-toggle nav-link" aria-label="Open site search"><i class="fas fa-search"></i></button></li>
+<li class="nav-item nav-dropdown">
+                  <button class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="publications-menu">Publications <span class="caret">▾</span></button>
+                  <ul class="dropdown-menu" id="publications-menu" role="menu" aria-label="Publications menu">
+                    <li role="none"><a role="menuitem" href="news.html" class="nav-link">News</a></li>
+                    <li role="none"><a role="menuitem" href="newsletters.html" class="nav-link">Newsletters</a></li>
+                    <li role="none"><a role="menuitem" href="annual-reports.html" class="nav-link">Annual Reports</a></li>
+                    <li role="none"><a role="menuitem" href="speeches.html" class="nav-link">Speeches</a></li>
+                  </ul>
+                </li>
+                </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main id="main-content">
+    <section class="hero" id="home">
+        <!-- Decorative responsive hero image for art-direction; marked aria-hidden as content is provided in text -->
+        <picture class="hero-media">
+            <source media="(max-width: 720px)" srcset="assets/images/strategy-0042.jpg">
+            <img src="assets/images/strategy-0042.jpg" alt="Photograph of a road in Namibia" role="img">
+        </picture>
+
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Building & Maintaining</span>
+                <span class="title-line">Namibia's</span>
+                <span class="title-line accent">Road Infrastructure</span>
+            </h1>
+            <p class="hero-subtitle">The Roads Authority constructs and maintains Namibia's road sector, playing a pivotal role in road safety and economic development. Namibia's road network has been ranked among the safest and most efficient in Africa.</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" data-count="10">0</span>
+                    <span class="stat-label">Consecutive Years<br>Best in Africa</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-count="44">0</span>
+                    <span class="stat-label">NATIS Centres<br>Nationwide</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-count="64000+">0</span>
+                    <span class="stat-label">Kilometers of<br>Road Network</span>
+                </div>
+            </div>
+            <div class="hero-buttons">
+                <a href="#permits" class="btn btn-primary pulse-on-hover">Apply for Permits</a>
+                <a href="#network" class="btn btn-secondary">Road Network Info</a>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section about-section" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Roads Authority <span class="text-accent">of Namibia</span></h2>
+                <p class="section-subtitle">Constructing and maintaining Namibia's road sector for safety, efficiency, and economic growth.</p>
+            </div>
+            
+            <div class="about-grid">
+                <div class="about-card hover-lift">
+                    <div class="about-icon">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <h3>Road Construction</h3>
+                    <p>Planning and execution of highway expansion projects and new road developments across Namibia.</p>
+                    <a href="networks.html" class="card-link">Current Projects <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="about-card hover-lift">
+                    <div class="about-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Road Maintenance</h3>
+                    <p>Ensuring Namibia's road network remains among the safest and best-maintained in Africa.</p>
+                    <a href="networks.html" class="card-link">Maintenance Schedule <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="about-card hover-lift">
+                    <div class="about-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Economic Development</h3>
+                    <p>Road infrastructure growth contributing to Namibia's and the SADC sub-region's economic development.</p>
+                    <a href="background.html" class="card-link">Economic Impact <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="achievement">
+                <div class="achievement-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="achievement-content">
+                    <h3>Recognition of Excellence</h3>
+                    <p>"Namibia's road infrastructure has been ranked as the best in Africa by the World Economic Forum (WEF) Global Competitiveness Report Index for the past 10 consecutive years."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Road Network Section -->
+    <section class="section network-section" id="network">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Namibia's <span class="text-accent">Road Network</span></h2>
+                <p class="section-subtitle">The Roads Authority is the custodian of the road network on behalf of the Government of Namibia.</p>
+            </div>
+            
+            <div class="network-content">
+                <div class="network-info">
+                    <h3>Road Management System</h3>
+                    <p>All proclamations and data regarding Namibia's road network are deposited in the Road Management System (RMS) database. This system ensures efficient planning, maintenance, and development of road infrastructure.</p>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-database"></i>
+                            <span>Centralized Road Data</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span>Network Planning Tools</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-clipboard-check"></i>
+                            <span>Maintenance Tracking</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Performance Analytics</span>
+                        </div>
+                    </div>
+                    
+                    <a href="networks.html" class="btn btn-outline">Explore Road Network <i class="fas fa-external-link-alt"></i></a>
+                </div>
+                
+                <div class="network-visual">
+                    <div class="map-container">
+                        <div class="map-node" style="top: 20%; left: 30%;" data-city="Windhoek"></div>
+                        <div class="map-node" style="top: 40%; left: 60%;" data-city="Walvis Bay"></div>
+                        <div class="map-node" style="top: 70%; left: 40%;" data-city="Keetmanshoop"></div>
+                        <div class="map-node" style="top: 30%; left: 80%;" data-city="Rundu"></div>
+                        <div class="map-connection"></div>
+                    </div>
+                    <div class="map-legend">
+                        <span class="legend-item"><span class="legend-dot primary"></span> Major Cities</span>
+                        <span class="legend-item"><span class="legend-dot accent"></span> Highway Connections</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Permits Section -->
+    <section class="section permits-section" id="permits">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Permits & <span class="text-accent">Regulations</span></h2>
+                <p class="section-subtitle">Authorizations for road transportation as per the Road Transportation Act and Regulations of 1977.</p>
+            </div>
+            
+            <div class="permits-grid">
+                <div class="permit-card">
+                    <div class="permit-header">
+                        <h3>Abnormal Load Permits</h3>
+                        <span class="permit-badge">Required</span>
+                    </div>
+                    <div class="permit-specs">
+                        <div class="spec">
+                            <i class="fas fa-ruler-vertical"></i>
+                            <div>
+                                <strong>Length</strong>
+                                <span>> 18.5 meters</span>
+                            </div>
+                        </div>
+                        <div class="spec">
+                            <i class="fas fa-ruler-horizontal"></i>
+                            <div>
+                                <strong>Width</strong>
+                                <span>> 2.6 meters</span>
+                            </div>
+                        </div>
+                        <div class="spec">
+                            <i class="fas fa-mountain"></i>
+                            <div>
+                                <strong>Height</strong>
+                                <span>> 4.3 meters</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="permit-info">Required for vehicles exceeding standard measurements on public roads within Namibia.</p>
+                    <a href="permits.html" class="btn btn-outline">Apply Online</a>
+                </div>
+                
+                <div class="permit-card">
+                    <div class="permit-header">
+                        <h3>Passenger Transport</h3>
+                        <span class="permit-badge">Act 74 of 1977</span>
+                    </div>
+                    <p>Permits authorizing the transportation of passengers for reward travelling on public roads within Namibia's borders.</p>
+                    <ul class="permit-list">
+                        <li><i class="fas fa-check-circle"></i> Tourist Transport</li>
+                        <li><i class="fas fa-check-circle"></i> Inter-City Buses</li>
+                        <li><i class="fas fa-check-circle"></i> Charter Services</li>
+                        <li><i class="fas fa-check-circle"></i> Taxi Permits</li>
+                    </ul>
+                    <a href="permits.html" class="btn btn-outline">Requirements & Forms</a>
+                </div>
+                
+                <div class="permit-card">
+                    <div class="permit-header">
+                        <h3>Freight & Cargo</h3>
+                        <span class="permit-badge">Commercial</span>
+                    </div>
+                    <p>Regulations and permits for commercial goods transportation across Namibia's road network.</p>
+                    <ul class="permit-list">
+                        <li><i class="fas fa-check-circle"></i> Goods Vehicle Permits</li>
+                        <li><i class="fas fa-check-circle"></i> Hazardous Materials</li>
+                        <li><i class="fas fa-check-circle"></i> Cross-Border Transport</li>
+                        <li><i class="fas fa-check-circle"></i> Overweight Vehicles</li>
+                    </ul>
+                    <a href="permits.html" class="btn btn-outline">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NATIS Section -->
+    <section class="section natis-section" id="natis">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">NATIS Centres <span class="text-accent">Nationwide</span></h2>
+                <p class="section-subtitle">Access Roads Authority services at our nationwide Namibia Traffic Information System centres.</p>
+            </div>
+            
+            <div class="natis-content">
+                <div class="natis-visual">
+                    <div id="natis-map" aria-label="Interactive map of NATIS centres" role="region"></div>
+                    <p style="position:absolute;left:1rem;bottom:1rem;margin:0;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.9);border-radius:0.4rem;font-weight:600;color:var(--text-dark);">Click a pin to get directions (opens Google Maps)</p>
+                </div>
+                
+                <div class="natis-services">
+                    <h3>Services Available</h3>
+                    <p>Visit any NATIS Centre for Roads Authority services including permit applications, vehicle registrations, and road-related inquiries.</p>
+                    
+                    <div class="services-grid">
+                        <div class="service">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Permit Applications</span>
+                        </div>
+                        <div class="service">
+                            <i class="fas fa-car"></i>
+                            <span>Vehicle Registration</span>
+                        </div>
+                        <div class="service">
+                            <i class="fas fa-id-card"></i>
+                            <span>Driver's Licenses</span>
+                        </div>
+                        <div class="service">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Road Information</span>
+                        </div>
+                        <div class="service">
+                            <i class="fas fa-comments"></i>
+                            <span>Public Inquiries</span>
+                        </div>
+                        <div class="service">
+                            <i class="fas fa-print"></i>
+                            <span>Document Services</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="findNatisBtn">Find Nearest NATIS</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="section news-section" id="news">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Latest <span class="text-accent">News</span> & Announcements</h2>
+                <p class="section-subtitle">Press releases and important announcements from the Roads Authority of Namibia.</p>
+            </div>
+            
+            <div class="news-grid">
+                <article class="news-card">
+                    <div class="news-date">
+                        <span class="date-day">15</span>
+                        <span class="date-month">MAR</span>
+                        <span class="date-year">2026</span>
+                    </div>
+                    <div class="news-content">
+                        <h3>Highway B2 Expansion Project</h3>
+                        <p>Construction begins on the 60km expansion of Highway B2 between Okahandja and Karibib to improve connectivity and safety.</p>
+                        <a href="news-article-1.html" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <article class="news-card">
+                    <div class="news-date">
+                        <span class="date-day">28</span>
+                        <span class="date-month">FEB</span>
+                        <span class="date-year">2026</span>
+                    </div>
+                    <div class="news-content">
+                        <h3>New NATIS Centre Opening</h3>
+                        <p>A new Namibia Traffic Information System centre opens in Opuwo to better serve the Kunene Region residents.</p>
+                        <a href="news-article-2.html" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <article class="news-card">
+                    <div class="news-date">
+                        <span class="date-day">10</span>
+                        <span class="date-month">FEB</span>
+                        <span class="date-year">2026</span>
+                    </div>
+                    <div class="news-content">
+                        <h3>Road Safety Campaign Launch</h3>
+                        <p>"Arrive Alive" campaign focuses on reducing accidents during the upcoming holiday season through increased awareness.</p>
+                        <a href="news.html" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+            
+            <div class="fraud-alert">
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-content">
+                    <h3>Stop RA-related Fraud and Corruption</h3>
+                    <p>Call our anonymous Fraud Hotline: <strong>0800 309 231</strong> (TN Mobile and landlines) or contact us via email: <strong>ra@tip-offs.com</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section (summary only - full contact page available) -->
+    <section class="section contact-summary" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contact <span class="text-accent">Roads Authority</span></h2>
+                <p class="section-subtitle">For enquiries, emergency numbers and to report road issues, visit our full Contact page.</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                        <div class="contact-details">
+                            <h4>Emergency Road Issues</h4>
+                            <p><strong>0800 300 100</strong></p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="contact-details">
+                            <h4>General Enquiries</h4>
+                            <p><strong>info@ra.org.na</strong></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-cta">
+                    <a href="contact.html" class="btn btn-primary">Visit full Contact page</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <img src="assets/logo.png" alt="RA Logo">
+                        <h3>Roads Authority<br>of Namibia</h3>
+                    </div>
+                    <p class="footer-description">Constructing and maintaining Namibia's road sector for safety, efficiency, and economic development since our establishment.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/p/Roads-Authority-RA-Namibia-100090605177835/" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://x.com/RANamibia" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.youtube.com/channel/UCC_VXQxrB93zIc6fwpoVTOw" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                        <a href="https://na.linkedin.com/company/roads-authority-of-namibia" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#network">Road Network</a></li>
+                        <li><a href="permits.html">Permits</a></li>
+                        <li><a href="weighbridge.html">Weighbridge</a></li>
+                        <li><a href="#natis">NATIS Centres</a></li>
+                        <li><a href="news.html">News</a></li>
+                        <li><a href="board.html">Board</a></li>
+                        <li><a href="committee.html">Executive Committee</a></li>
+                        <li><a href="strategy.html">Strategy</a></li>
+                        <li><a href="background.html">Background</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Important Resources</h4>
+                    <ul>
+                        <li><a href="permits.html">Road Transportation Act</a></li>
+                        <li><a href="permits.html">Permit Application Forms</a></li>
+                        <li><a href="background.html">Road Safety Guidelines</a></li>
+                        <li><a href="news.html">Annual Reports</a></li>
+                        <li><a href="news.html">Tender Notices</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Emergency Contacts</h4>
+                    <ul>
+                        <li><strong>Road Emergencies:</strong> 0800 300 100</li>
+                        <li><strong>Fraud Hotline:</strong> 0800 309 231</li>
+                        <li><strong>Traffic Police:</strong> 10111</li>
+                        <li><strong>Ambulance:</strong> 10177 / 084 124</li>
+                    </ul>
+                    <div class="newsletter">
+                        <p>Subscribe for road alerts & updates</p>
+                        <form class="newsletter-form" aria-label="Subscribe to newsletter">
+                            <label for="newsletterEmail" class="visually-hidden">Email address</label>
+                            <div class="newsletter-inner">
+                                <input id="newsletterEmail" type="email" placeholder="Email address" required aria-required="true">
+                                <button type="submit" aria-label="Subscribe"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Roads Authority of Namibia. All rights reserved. | <a href="privacy.html">Privacy Policy</a> | <a href="accessibility.html">Accessibility</a> | <a href="terms.html">Terms of Use</a></p>
+                <p class="affiliation">A Government Agency under the Ministry of Works and Transport</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <!-- Leaflet JS for NATIS map -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="assets/natis.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Report a Road Issue | Roads Authority</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="assets/logo.png">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="navbar"></nav>
+
+  <main id="main-content" class="container" style="padding-top:6rem;">
+    <section class="section">
+      <div class="container">
+        <!-- Hero with background slideshow and standout image -->
+        <div class="report-hero" aria-hidden="false">
+          <div class="slideshow" data-images='["assets/images/report-1.jpg","assets/images/report-2.jpg","assets/images/report-3.jpg","assets/images/report-4.jpg","assets/images/report-6.jpeg"]' aria-hidden="true"></div>
+          <!-- Standout image (image 5) placed above the title for emphasis -->
+          <div class="hero-standout-wrap">
+            <img src="assets/images/report-5.png" alt="Road Issue Response" class="hero-standout">
+          </div>
+
+        <div class="section-header">
+          <h1 class="section-title">Report a Road Issue</h1>
+          <p class="section-subtitle">Use this form to report potholes, road damage, missing signage or drainage issues. Provide location details and a short description so our teams can respond efficiently.</p>
+        </div>
+        </div>
+
+        <div class="report-card">
+          <form id="roadIssueForm">
+            <div class="form-group">
+              <label for="issueType">Issue Type</label>
+              <select id="issueType" required>
+                <option value="" disabled selected>Select issue type</option>
+                <option value="pothole">Pothole</option>
+                <option value="damage">Road Damage</option>
+                <option value="signage">Missing/Damaged Signage</option>
+                <option value="drainage">Drainage Problem</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="location">Location Details</label>
+              <input type="text" id="location" placeholder="Road name, nearest town, landmark" required>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea id="description" rows="6" placeholder="Please describe the issue in detail" required class="limited-textarea"></textarea>
+              <div class="word-help"><small id="description-count">250 words remaining</small></div>
+            </div>
+
+            <div class="form-group">
+              <label for="contactInfo">Your Contact (Optional)</label>
+              <input type="text" id="contactInfo" placeholder="Email or phone number for updates">
+            </div>
+
+            <div class="form-group">
+              <label for="reportImages">Attach images (optional)</label>
+              <input type="file" id="reportImages" accept="image/*" multiple aria-describedby="imageHelp">
+              <div id="imageHelp" class="word-help"><small>Up to 5 images, max 5MB each. Preview appears below.</small></div>
+              <div id="imagePreview" class="image-preview" aria-live="polite"></div>
+            </div>
+
+            <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+              <button type="submit" class="btn btn-primary">Submit Report</button>
+              <a href="contact.html" class="btn btn-secondary">Back to contact</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    (function(){
+      // Lightweight slideshow for report-issue hero. Expects images in assets/images/report-*.jpg
+      const slideshowEl = document.querySelector('.report-hero .slideshow');
+      if (!slideshowEl) return;
+      let images = [];
+      try { images = JSON.parse(slideshowEl.dataset.images || '[]'); } catch(e){ images = []; }
+      if (!images || images.length === 0) return;
+
+      // create slide elements
+      images.forEach((src, i) => {
+        const d = document.createElement('div');
+        d.className = 'slide';
+        d.style.backgroundImage = `url("${src}")`;
+        if (i === 0) d.classList.add('active');
+        slideshowEl.appendChild(d);
+      });
+
+      let idx = 0; const slides = Array.from(slideshowEl.querySelectorAll('.slide'));
+      const next = () => {
+        slides[idx].classList.remove('active');
+        idx = (idx + 1) % slides.length;
+        slides[idx].classList.add('active');
+      };
+
+      // Gentle automatic cycling and subtle parallax on mouse move
+      const INTERVAL = 4500; let timer = setInterval(next, INTERVAL);
+
+      slideshowEl.addEventListener('mouseenter', ()=> { clearInterval(timer); });
+      slideshowEl.addEventListener('mouseleave', ()=> { timer = setInterval(next, INTERVAL); });
+
+      // optional subtle movement on mouse move for depth
+      slideshowEl.addEventListener('mousemove', (e)=>{
+        const rect = slideshowEl.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+        slides.forEach((s,i)=> s.style.transform = `scale(${i===idx?1:1.02}) translate(${px * (i%2?6:-6)}px, ${py * 6}px)`);
+      });
+
+      // reset transforms on leave
+      slideshowEl.addEventListener('mouseleave', ()=> slides.forEach(s => s.style.transform = ''));
+    })();
+  </script>
+</body>
+</html>

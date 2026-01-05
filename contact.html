@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact the Roads Authority of Namibia — phone numbers, emails and NATIS centre locations.">
+    <title>Contact | Roads Authority of Namibia</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="assets/logo.png">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <!--   Navigation (canonical) - injected by script.js -->
+    <nav class="navbar"></nav>
+
+    <main id="main-content" class="container" style="padding-top:6rem;">
+        <section class="section contact-hero" aria-label="Contact Roads Authority">
+            <div class="container">
+                <div class="grid-2" style="align-items:center;">
+                    <div>
+                        <h1 class="section-title">Contact <span class="text-accent">Roads Authority</span></h1>
+                        <p class="section-subtitle">Reach our headquarters, NATIS centres, or report a road issue. We're here to help.</p>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+                            <a href="tel:0800300100" class="btn btn-primary">Call Road Emergencies<br><small style="font-weight:600;">0800 300 100</small></a>
+                            <a href="mailto:info@ra.org.na" class="btn btn-secondary">Email Us</a>
+                        </div>
+                    </div>
+                    <div style="max-width:420px;">
+                        <div id="contact-map-wrap">
+                          <!-- The iframe will prefer the Google Maps Embed API if `window.GOOGLE_MAPS_API_KEY` is set.
+                               To enable the Embed API, copy `assets/google-maps-config.js.example` to
+                               `assets/google-maps-config.js` and set your API key in that file. -->
+                          <noscript>
+                            <iframe src="https://www.google.com/maps?q=C3CJ%2BHFG%20Windhoek&output=embed" width="100%" height="300" style="border:0;border-radius:0.25rem;box-shadow:var(--shadow-md);" allowfullscreen="" loading="lazy"></iframe>
+                          </noscript>
+                        </div>
+                        <p style="margin-top:0.5rem;font-size:0.95rem"><a id="contact-map-link" href="https://www.google.com/maps?q=C3CJ%2BHFG%20Windhoek" target="_blank" rel="noopener">Open Roads Authority in Google Maps</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="margin-top:2rem;">
+            <div class="container">
+                <div style="display:grid;grid-template-columns:1fr 360px;gap:1.25rem;">
+                    <div>
+                        <h3>General Contact & Inquiries</h3>
+                        <p>Please use the form or the contact details at the right to get in touch.</p>
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <label for="name">Your name</label>
+                                <input type="text" id="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" rows="6" required class="limited-textarea"></textarea>
+                                <div class="word-help"><small id="message-count">250 words remaining</small></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send message</button>
+                        </form>
+
+                        <section style="margin-top:1.5rem;">
+                            
+                            <h3>Report a Road Issue</h3>
+                            <p>To report a road-related issue (potholes, signage, drainage, etc.), please use our dedicated report form so we can process and track your submission.</p>
+                            <p><a href="report-issue.html" class="btn btn-primary" style="margin-top:0.5rem;">Report a road issue</a></p>
+                        </section>
+                    </div>
+                    <aside>
+                        <div class="cta alert-cta" role="region" aria-labelledby="hq-heading">
+                            <div class="cta-content">
+                                <h3 id="hq-heading">Headquarters</h3>
+                                <p>Roads Authority of Namibia<br>Headquarters in Windhoek</p>
+                                <p><strong>Phone:</strong> 0800 300 100<br><strong>Email:</strong> info@ra.org.na</p>
+                            </div>
+                        </div>
+
+                        <div class="cta alert-cta" style="margin-top:1rem;">
+                            <div class="cta-content">
+                                <h3>Fraud Hotline</h3>
+                                <p>Anonymous reporting service: <strong>0800 309 231</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="cta" style="margin-top:1rem;">
+                            <div class="cta-content">
+                                <h3>NATIS Centres</h3>
+                                <p>Find your nearest NATIS centre and the services they provide. Visit the NATIS page for full list and contact details.</p>
+                                <a href="natis-licence.html" class="btn btn-secondary">Find NATIS centre</a>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="assets/google-maps-config.js" defer></script>
+    <script>
+      // If user provides assets/google-maps-config.js and sets window.GOOGLE_MAPS_API_KEY,
+      // use the Google Maps Embed API; otherwise fall back to a simple embed URL.
+      (function(){
+        function loadEmbed(){
+          const wrap = document.getElementById('contact-map-wrap');
+          if (!wrap) return;
+          const apiKey = (window.GOOGLE_MAPS_API_KEY || '').trim();
+          const plus = 'C3CJ+HFG%20Windhoek';
+          const iframe = document.createElement('iframe');
+          iframe.width = '100%';
+          iframe.height = '300';
+          iframe.style.border = '0';
+          iframe.style.borderRadius = '0.25rem';
+          iframe.style.boxShadow = 'var(--shadow-md)';
+          iframe.loading = 'lazy';
+          if (apiKey && apiKey !== 'YOUR_GOOGLE_MAPS_EMBED_API_KEY_HERE') {
+            // Use Google Maps Embed API - requires API key
+            iframe.src = `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(apiKey)}&q=${plus}`;
+          } else {
+            // Fallback (no API key)
+            iframe.src = `https://www.google.com/maps?q=C3CJ%2BHFG%20Windhoek&output=embed`;
+            console.warn('Google Maps Embed API key not found. Using fallback embed. To use the Embed API, add assets/google-maps-config.js with your key.');
+          }
+          wrap.innerHTML = '';
+          wrap.appendChild(iframe);
+        }
+
+        // Try to load after DOM is ready
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadEmbed); else loadEmbed();
+      })();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

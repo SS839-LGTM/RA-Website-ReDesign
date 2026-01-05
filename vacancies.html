@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vacancies | Roads Authority of Namibia</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="assets/logo.png">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <nav class="navbar"></nav>
+
+    <main id="main-content" class="container">
+        <section class="section">
+            <div class="section-header">
+                <h1 class="section-title">Vacancies</h1>
+                <p class="section-subtitle">Current career opportunities at the Roads Authority of Namibia.</p>
+            </div>
+
+            <div class="content">
+                <p>The Roads Authority advertises employment opportunities on its vacancy portal. Below is a live attempt to retrieve the current vacancies from the official portal; if we cannot fetch them due to cross-origin restrictions you can always open the official portal directly.</p>
+
+                <div class="section-block" id="vacancies-block" aria-live="polite">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+                        <h2 id="vacancies-heading">Live vacancies</h2>
+                        <div style="display:flex;gap:0.5rem;align-items:center">
+                            <button id="vacancies-refresh" class="btn btn-outline">Refresh</button>
+                            <a id="vacancies-portal" href="https://erec.ra.org.na/" class="btn btn-primary" target="_blank" rel="noopener">Open vacancy portal</a>
+                        </div>
+                    </div>
+
+                    <p id="vacancies-status" class="muted">Loading vacancies…</p>
+
+                    <ul id="vacancies-list" class="values-grid" aria-labelledby="vacancies-heading" style="margin-top:1rem;list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem"></ul>
+
+                    <p class="muted" style="margin-top:0.75rem">Note: If the portal prevents remote fetching this page will show the portal link above — click "Open vacancy portal" to view and apply.</p>
+                </div>
+
+                <h3>How to apply</h3>
+                <ul>
+                    <li>Prepare a written application letter and a detailed Curriculum Vitae (CV).</li>
+                    <li>Attach certified copies of academic records and proof of identification (Namibian ID).</li>
+                    <li>Where requested, include contactable referees and any additional documentation specified in the advert.</li>
+                </ul>
+
+                <h3>Where to submit</h3>
+                <p>Applications are addressed to: <strong>The Manager: Talent Development, Roads Authority</strong></p>
+                <address>
+                    Private Bag 12030<br>
+                    Ausspannplatz<br>
+                    Windhoek, Namibia
+                </address>
+                <p>For enquiries call the Roads Authority switchboard: <strong>+264 61 284 7000</strong>.</p>
+
+                <p><strong>Note:</strong> Only shortlisted applicants will be contacted for interview. Keep a copy of your application documents as submitted.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+    (function(){
+      const endpoints = [
+        'https://erec.ra.org.na/Jobs',
+        'https://erec.ra.org.na/Pages/Vacancies.aspx',
+        'https://erec.ra.org.na/Jobs.aspx',
+        'https://erec.ra.org.na/Pages/Jobs.aspx',
+        'https://erec.ra.org.na/_api/web/lists/getbytitle(\'Vacancies\')/items'
+      ];
+
+      const status = document.getElementById('vacancies-status');
+      const list = document.getElementById('vacancies-list');
+      const portalLink = document.getElementById('vacancies-portal');
+      const refreshBtn = document.getElementById('vacancies-refresh');
+
+      function setStatus(text){ status.textContent = text }
+      function clearList(){ list.innerHTML = '' }
+
+      async function tryFetch(url){
+        try{
+          const res = await fetch(url, { method: 'GET', mode: 'cors' });
+          if(!res.ok) throw new Error('HTTP ' + res.status);
+          const contentType = res.headers.get('content-type') || '';
+          if(contentType.includes('application/json')){
+            const data = await res.json();
+            return { type: 'json', data };
+          }
+          const text = await res.text();
+          return { type: 'html', data: text };
+        }catch(e){
+          // Return the error so caller can decide to continue
+          return { error: e };
+        }
+      }
+
+      function parseHtmlForJobs(htmlString){
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+
+        // Strategy 1: look for lists after headings like 'Vacancies' or 'Available vacancies'
+        const headings = Array.from(doc.querySelectorAll('h1,h2,h3,h4'))
+          .filter(h => /vacanc/i.test(h.textContent));
+        for(const h of headings){
+          let el = h.nextElementSibling;
+          while(el){
+            if(el.tagName.toLowerCase() === 'ul' || el.tagName.toLowerCase() === 'ol'){
+              return Array.from(el.querySelectorAll('li')).map(li => ({ title: li.textContent.trim(), url: (li.querySelector('a')||{}).href || null }));
+            }
+            if(el.querySelectorAll && el.querySelectorAll('a').length){
+              // fallback: collect links in this block
+              const items = Array.from(el.querySelectorAll('a')).map(a => ({ title: (a.textContent||a.getAttribute('title')||a.href).trim(), url: a.href }));
+              if(items.length) return items;
+            }
+            el = el.nextElementSibling;
+          }
+        }
+
+        // Strategy 2: collect links with 'apply' or 'vacancy' or 'job' in text or href
+        const anchors = Array.from(doc.querySelectorAll('a'));
+        const candidates = anchors.filter(a => /apply|vacanc|job|erec|careers/i.test(a.textContent + ' ' + (a.href||''))).map(a => ({ title: (a.textContent||a.getAttribute('title')||a.href).trim(), url: a.href }));
+        if(candidates.length) return candidates;
+
+        // Strategy 3: look for tables with rows that look like job lists
+        const tables = Array.from(doc.querySelectorAll('table'));
+        for(const t of tables){
+          const rows = Array.from(t.querySelectorAll('tr'));
+          const items = rows.map(r => ({ title: r.textContent.trim(), url: (r.querySelector('a')||{}).href || null })).filter(i=>i.title);
+          if(items.length) return items;
+        }
+
+        return [];
+      }
+
+      function renderJobs(items, sourceUrl){
+        clearList();
+        if(!items || items.length === 0){
+          setStatus('No vacancies found on ' + sourceUrl + '.');
+          return;
+        }
+        setStatus('Found ' + items.length + ' vacancy(ies) — last checked: ' + new Date().toLocaleString());
+        items.slice(0, 30).forEach(it => {
+          const li = document.createElement('li');
+          li.className = 'about-card';
+          const title = document.createElement('h4');
+          title.textContent = it.title || 'Vacancy';
+          li.appendChild(title);
+          if(it.url){
+            const a = document.createElement('a');
+            a.href = it.url;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.className = 'card-link';
+            a.textContent = 'Open listing';
+            li.appendChild(a);
+          }
+          list.appendChild(li);
+        });
+      }
+
+      async function fetchVacancies(){
+        setStatus('Searching for vacancies...');
+        clearList();
+        let found = false;
+
+        for(const url of endpoints){
+          setStatus('Trying ' + url);
+          const result = await tryFetch(url);
+          if(result.error){
+            // CORS or network error; continue to next
+            console.debug('Fetch error for', url, result.error);
+            continue;
+          }
+
+          if(result.type === 'json'){
+            // Try to map common structures
+            const items = [];
+            const arr = Array.isArray(result.data.value) ? result.data.value : (Array.isArray(result.data) ? result.data : null);
+            if(arr){
+              for(const it of arr.slice(0,50)){
+                items.push({ title: it.Title || it.title || it.Position || JSON.stringify(it).slice(0,80), url: it.FileRef || it.File || null });
+              }
+            }
+            if(items.length){ renderJobs(items, url); found = true; break; }
+          }
+
+          if(result.type === 'html'){
+            const jobs = parseHtmlForJobs(result.data);
+            if(jobs && jobs.length){ renderJobs(jobs, url); found = true; break; }
+          }
+        }
+
+        if(!found){
+          setStatus('Could not fetch listings automatically — click "Open vacancy portal" to view the official listings.');
+        }
+      }
+
+      refreshBtn.addEventListener('click', fetchVacancies);
+
+      // Initial attempt
+      fetchVacancies();
+    })();
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>

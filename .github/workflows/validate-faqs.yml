@@ -1,0 +1,40 @@
+name: Validate FAQs
+
+on:
+  push:
+    paths:
+      - 'assets/faqs-500.json'
+      - 'assets/faqs-500.json.meta.json'
+      - 'tools/**'
+  pull_request:
+    paths:
+      - 'assets/faqs-500.json'
+      - 'assets/faqs-500.json.meta.json'
+      - 'tools/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Validate FAQ bundle and run matching tests (Node)
+        run: |
+          node tools/ci_validate_faqs.js
+
+  validate-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run PowerShell matching tests (Windows)
+        shell: powershell
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tools\faq_test.ps1
