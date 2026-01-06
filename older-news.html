@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Older News Archive | Roads Authority of Namibia</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="assets/logo.png">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="navbar"></nav>
+
+  <header class="background-hero">
+    <div class="container">
+      <h1>News Archive</h1>
+      <p class="lead">Older press releases and historical announcements from the Roads Authority.</p>
+    </div>
+  </header>
+
+  <main id="main-content" class="section">
+    <div class="container">
+      <section class="section-header">
+        <h2 class="section-title">Older News <span class="text-accent">Archive</span></h2>
+        <p class="section-subtitle">A curated list of past news items. Use the search box to find articles by year or keyword.</p>
+      </section>
+
+      <div class="section-block">
+        <div class="archive-controls" style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+          <label for="archive-search" class="visually-hidden">Search archive</label>
+          <input id="archive-search" class="vac-search" type="search" placeholder="Search archive (e.g., 2014, NATIS)" aria-label="Search archive">
+          <a href="news.html" class="btn btn-outline" style="margin-left:auto">Back to Latest</a>
+        </div>
+
+        <div id="archive-list" class="news-grid" style="margin-top:1rem">
+          <article class="news-card">
+            <div class="news-date">
+              <span class="date-day">29</span>
+              <span class="date-month">JUN</span>
+              <span class="date-year">2014</span>
+            </div>
+            <div class="news-content">
+              <img src="assets/natisOpuwo.png" alt="NATIS opening" style="width:100%;border-radius:0.5rem;margin-bottom:0.75rem;">
+              <h3><a href="news-article-2.html">New NATIS Centre Opens in Opuwo</a></h3>
+              <p>New Namibia Traffic Information System centre opens in Opuwo to better serve the Kunene Region residents.</p>
+              <a href="news-article-2.html" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+
+          <article class="news-card">
+            <div class="news-date">
+              <span class="date-day">29</span>
+              <span class="date-month">JUN</span>
+              <span class="date-year">2013</span>
+            </div>
+            <div class="news-content">
+              <h3>Archive note</h3>
+              <p>Older press releases have been migrated to this archive. If you need a specific item that is missing, contact <a href="mailto:pr@ra.org.na">pr@ra.org.na</a>.</p>
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer injected by script.js -->
+  <script>
+    (function(){
+      const search = document.getElementById('archive-search');
+      const list = document.getElementById('archive-list');
+      if(!search || !list) return;
+      search.addEventListener('input', ()=>{
+        const q = search.value.trim().toLowerCase();
+        Array.from(list.querySelectorAll('.news-card')).forEach(card=>{
+          const text = card.textContent.toLowerCase();
+          card.style.display = q ? (text.includes(q) ? '' : 'none') : '';
+        });
+      });
+    })();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

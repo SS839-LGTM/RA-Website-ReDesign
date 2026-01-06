@@ -6,6 +6,7 @@
     <title>Vacancies | Roads Authority of Namibia</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="assets/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -22,7 +23,7 @@
                 <p>The Roads Authority advertises employment opportunities on its vacancy portal. Below is a live attempt to retrieve the current vacancies from the official portal; if we cannot fetch them due to cross-origin restrictions you can always open the official portal directly.</p>
 
                 <div class="section-block" id="vacancies-block" aria-live="polite">
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+                    <div class="vacancies-header" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
                         <h2 id="vacancies-heading">Live vacancies</h2>
                         <div style="display:flex;gap:0.5rem;align-items:center">
                             <button id="vacancies-refresh" class="btn btn-outline">Refresh</button>
@@ -30,9 +31,27 @@
                         </div>
                     </div>
 
-                    <p id="vacancies-status" class="muted">Loading vacancies…</p>
+                    <div class="vacancies-controls" style="display:flex;gap:0.75rem;align-items:center;margin-top:0.75rem;flex-wrap:wrap;">
+                        <label for="vac-search" class="visually-hidden">Search vacancies</label>
+                        <input id="vac-search" class="vac-search" type="search" placeholder="Search vacancies (title, keyword)" aria-label="Search vacancies">
 
-                    <ul id="vacancies-list" class="values-grid" aria-labelledby="vacancies-heading" style="margin-top:1rem;list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem"></ul>
+                        <label for="vac-sort" class="visually-hidden">Sort vacancies</label>
+                        <select id="vac-sort" class="vac-sort" aria-label="Sort vacancies">
+                          <option value="relevance">Sort: Relevance</option>
+                          <option value="newest">Sort: Newest</option>
+                          <option value="oldest">Sort: Oldest</option>
+                          <option value="title-az">Title: A–Z</option>
+                          <option value="title-za">Title: Z–A</option>
+                        </select>
+
+                        <span class="muted" style="margin-left:auto;">Filter results locally</span>
+                    </div>
+
+                    <p id="vacancies-status" class="muted" style="margin-top:0.5rem">Loading vacancies…</p>
+
+                    <ul id="vacancies-list" class="vacancy-grid" aria-labelledby="vacancies-heading" style="margin-top:1rem;list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem"></ul>
+
+                    <div id="vacancies-empty" class="muted" style="display:none;margin-top:1rem">No vacancies found. Use "Open vacancy portal" to view latest opportunities.</div>
 
                     <p class="muted" style="margin-top:0.75rem">Note: If the portal prevents remote fetching this page will show the portal link above — click "Open vacancy portal" to view and apply.</p>
                 </div>
@@ -72,9 +91,13 @@
       const list = document.getElementById('vacancies-list');
       const portalLink = document.getElementById('vacancies-portal');
       const refreshBtn = document.getElementById('vacancies-refresh');
+      const searchInput = document.getElementById('vac-search');
+      const emptyEl = document.getElementById('vacancies-empty');
+
+      let vacanciesCache = [];
 
       function setStatus(text){ status.textContent = text }
-      function clearList(){ list.innerHTML = '' }
+      function clearList(){ list.innerHTML = ''; if(emptyEl) emptyEl.style.display = 'none'; }
 
       async function tryFetch(url){
         try{
@@ -93,22 +116,66 @@
         }
       }
 
+      // Date parsing / extraction helpers
+      function parseDateFromString(str){
+        if(!str) return null;
+        // ISO e.g., 2025-03-15
+        const iso = str.match(/\d{4}-\d{2}-\d{2}/);
+        if(iso) return new Date(iso[0]).toISOString();
+        // DD MMM YYYY e.g., 15 Mar 2025
+        const dmy = str.match(/\b(\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4})\b/i);
+        if(dmy){ const dt = new Date(dmy[0]); if(!isNaN(dt)) return dt.toISOString(); }
+        // MMM DD, YYYY e.g., March 15, 2025
+        const mdy = str.match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{4}\b/i);
+        if(mdy){ const dt = new Date(mdy[0]); if(!isNaN(dt)) return dt.toISOString(); }
+        // Year-only fallback
+        const y = str.match(/\b(19\d{2}|20\d{2})\b/);
+        if(y){ return new Date(y[0] + '-01-01').toISOString(); }
+        return null;
+      }
+
+      function extractDateFromElement(el){
+        if(!el) return null;
+        // time[datetime]
+        const timeEl = el.querySelector && el.querySelector('time[datetime]');
+        if(timeEl) return new Date(timeEl.getAttribute('datetime')).toISOString();
+        // time tag text
+        const timeText = el.querySelector && el.querySelector('time');
+        if(timeText){ const p = parseDateFromString(timeText.textContent || ''); if(p) return p; }
+        // look for elements with class names indicating dates
+        const dateLike = el.querySelector && (el.querySelector('.date') || el.querySelector('.posted') || el.querySelector('.news-date'));
+        if(dateLike){ const p = parseDateFromString(dateLike.textContent || ''); if(p) return p; }
+        // try siblings (previous sibling could be a date node)
+        if(el.previousElementSibling){ const p = parseDateFromString(el.previousElementSibling.textContent || ''); if(p) return p; }
+        // fallback: attempt to parse the element's own text
+        return parseDateFromString(el.textContent || '');
+      }
+
       function parseHtmlForJobs(htmlString){
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlString, 'text/html');
 
-        // Strategy 1: look for lists after headings like 'Vacancies' or 'Available vacancies'
-        const headings = Array.from(doc.querySelectorAll('h1,h2,h3,h4'))
-          .filter(h => /vacanc/i.test(h.textContent));
+        // Strategy 1: lists after headings like 'Vacancies'
+        const headings = Array.from(doc.querySelectorAll('h1,h2,h3,h4')).filter(h => /vacanc/i.test(h.textContent));
         for(const h of headings){
           let el = h.nextElementSibling;
           while(el){
             if(el.tagName.toLowerCase() === 'ul' || el.tagName.toLowerCase() === 'ol'){
-              return Array.from(el.querySelectorAll('li')).map(li => ({ title: li.textContent.trim(), url: (li.querySelector('a')||{}).href || null }));
+              return Array.from(el.querySelectorAll('li')).map(li => {
+                const a = li.querySelector('a');
+                const title = (a && a.textContent.trim()) || li.textContent.trim();
+                const url = (a||{}).href || null;
+                const date = extractDateFromElement(li) || extractDateFromElement(h);
+                return { title, url, date };
+              });
             }
             if(el.querySelectorAll && el.querySelectorAll('a').length){
-              // fallback: collect links in this block
-              const items = Array.from(el.querySelectorAll('a')).map(a => ({ title: (a.textContent||a.getAttribute('title')||a.href).trim(), url: a.href }));
+              const items = Array.from(el.querySelectorAll('a')).map(a => {
+                const title = (a.textContent||a.getAttribute('title')||a.href).trim();
+                const url = a.href;
+                const date = extractDateFromElement(a) || extractDateFromElement(el) || null;
+                return { title, url, date };
+              });
               if(items.length) return items;
             }
             el = el.nextElementSibling;
@@ -117,49 +184,83 @@
 
         // Strategy 2: collect links with 'apply' or 'vacancy' or 'job' in text or href
         const anchors = Array.from(doc.querySelectorAll('a'));
-        const candidates = anchors.filter(a => /apply|vacanc|job|erec|careers/i.test(a.textContent + ' ' + (a.href||''))).map(a => ({ title: (a.textContent||a.getAttribute('title')||a.href).trim(), url: a.href }));
+        const candidates = anchors.filter(a => /apply|vacanc|job|erec|careers/i.test(a.textContent + ' ' + (a.href||''))).map(a => {
+          const title = (a.textContent||a.getAttribute('title')||a.href).trim();
+          const date = extractDateFromElement(a) || extractDateFromElement(a.parentElement) || null;
+          return { title, url: a.href, date };
+        });
         if(candidates.length) return candidates;
 
         // Strategy 3: look for tables with rows that look like job lists
         const tables = Array.from(doc.querySelectorAll('table'));
         for(const t of tables){
           const rows = Array.from(t.querySelectorAll('tr'));
-          const items = rows.map(r => ({ title: r.textContent.trim(), url: (r.querySelector('a')||{}).href || null })).filter(i=>i.title);
+          const items = rows.map(r => ({ title: r.textContent.trim(), url: (r.querySelector('a')||{}).href || null, date: extractDateFromElement(r) })).filter(i=>i.title);
           if(items.length) return items;
         }
 
         return [];
       }
 
-      function renderJobs(items, sourceUrl){
+      function renderJobs(items){
         clearList();
         if(!items || items.length === 0){
-          setStatus('No vacancies found on ' + sourceUrl + '.');
+          if(emptyEl) { emptyEl.style.display = 'block'; }
+          setStatus('No vacancies found.');
           return;
         }
+
         setStatus('Found ' + items.length + ' vacancy(ies) — last checked: ' + new Date().toLocaleString());
-        items.slice(0, 30).forEach(it => {
+
+        items.slice(0, 50).forEach(it => {
           const li = document.createElement('li');
-          li.className = 'about-card';
+          li.className = 'vacancy-card';
+
           const title = document.createElement('h4');
           title.textContent = it.title || 'Vacancy';
           li.appendChild(title);
+
+          if(it.date){
+            const d = document.createElement('div');
+            d.className = 'vacancy-date muted';
+            try{ d.textContent = new Date(it.date).toLocaleDateString(); }catch(e){ d.textContent = it.date; }
+            li.appendChild(d);
+          }
+
+          if(it.source){
+            const src = document.createElement('div');
+            src.className = 'vacancy-source muted';
+            src.textContent = it.source;
+            li.appendChild(src);
+          }
+
           if(it.url){
             const a = document.createElement('a');
             a.href = it.url;
             a.target = '_blank';
             a.rel = 'noopener';
-            a.className = 'card-link';
+            a.className = 'btn btn-outline apply-link';
             a.textContent = 'Open listing';
             li.appendChild(a);
           }
+
           list.appendChild(li);
         });
+      }
+
+      function filterAndRender(){
+        const q = (searchInput && searchInput.value || '').trim().toLowerCase();
+        let filtered = vacanciesCache;
+        if(q){
+          filtered = vacanciesCache.filter(v => (v.title||'').toLowerCase().includes(q) || (v.location||'').toLowerCase().includes(q) || (v.source||'').toLowerCase().includes(q));
+        }
+        renderJobs(filtered);
       }
 
       async function fetchVacancies(){
         setStatus('Searching for vacancies...');
         clearList();
+        vacanciesCache = [];
         let found = false;
 
         for(const url of endpoints){
@@ -172,20 +273,35 @@
           }
 
           if(result.type === 'json'){
-            // Try to map common structures
+            // Try to map common structures (attempt to surface posted/published dates)
             const items = [];
             const arr = Array.isArray(result.data.value) ? result.data.value : (Array.isArray(result.data) ? result.data : null);
             if(arr){
               for(const it of arr.slice(0,50)){
-                items.push({ title: it.Title || it.title || it.Position || JSON.stringify(it).slice(0,80), url: it.FileRef || it.File || null });
+                // common date-like keys to consider
+                const dateKeys = ['Posted','PublishedDate','Date','Created','PublishDate','created','modified','ClosingDate','StartDate','OpeningDate','PostedDate'];
+                let parsedDate = null;
+                for(const k of dateKeys){
+                  if(it[k]){
+                    parsedDate = (typeof it[k] === 'string') ? parseDateFromString(it[k]) : (it[k] instanceof Date ? it[k].toISOString() : parseDateFromString(String(it[k])));
+                    if(parsedDate) break;
+                  }
+                }
+
+                items.push({
+                  title: it.Title || it.title || it.Position || (it.JobTitle || '') || JSON.stringify(it).slice(0,80),
+                  url: it.FileRef || it.File || it.link || null,
+                  source: url,
+                  date: parsedDate
+                });
               }
             }
-            if(items.length){ renderJobs(items, url); found = true; break; }
+            if(items.length){ vacanciesCache = items; filterAndRender(); found = true; break; }
           }
 
           if(result.type === 'html'){
             const jobs = parseHtmlForJobs(result.data);
-            if(jobs && jobs.length){ renderJobs(jobs, url); found = true; break; }
+            if(jobs && jobs.length){ vacanciesCache = jobs.map(j => ({ title: j.title, url: j.url, source: url, date: j.date })); filterAndRender(); found = true; break; }
           }
         }
 
@@ -194,6 +310,47 @@
         }
       }
 
+      const sortSelect = document.getElementById('vac-sort');
+
+      function sortItems(items){
+        if(!items || !items.length) return items;
+        const mode = (sortSelect && sortSelect.value) || 'relevance';
+        // Clone to avoid mutating cache
+        const arr = items.slice();
+        if(mode === 'relevance') return arr;
+
+        // Try to sort by parsed date if available
+        if(mode === 'newest' || mode === 'oldest'){
+          arr.sort((a,b)=>{
+            const da = a.date ? Date.parse(a.date) : 0;
+            const db = b.date ? Date.parse(b.date) : 0;
+            // fallback to title compare if dates equal or missing
+            if(da === db) return (a.title || '').localeCompare(b.title || '');
+            return mode === 'newest' ? db - da : da - db;
+          });
+          return arr;
+        }
+
+        if(mode === 'title-az' || mode === 'title-za'){
+          arr.sort((a,b)=> (a.title||'').localeCompare(b.title||''));
+          if(mode === 'title-za') arr.reverse();
+          return arr;
+        }
+        return arr;
+      }
+
+      function filterAndRender(){
+        const q = (searchInput && searchInput.value || '').trim().toLowerCase();
+        let filtered = vacanciesCache;
+        if(q){
+          filtered = vacanciesCache.filter(v => (v.title||'').toLowerCase().includes(q) || (v.location||'').toLowerCase().includes(q) || (v.source||'').toLowerCase().includes(q));
+        }
+        filtered = sortItems(filtered);
+        renderJobs(filtered);
+      }
+
+      if(searchInput){ searchInput.addEventListener('input', filterAndRender); }
+      if(sortSelect){ sortSelect.addEventListener('change', filterAndRender); }
       refreshBtn.addEventListener('click', fetchVacancies);
 
       // Initial attempt

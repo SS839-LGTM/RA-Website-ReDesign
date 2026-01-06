@@ -4,22 +4,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Canonical navbar markup injected for consistency across pages
     (function ensureCanonicalNav(){
         const canonical = `
-        <div class="nav-container">
-          <a href="index.html" class="logo">
-            <img src="assets/logo.png" alt="RA Logo" id="logo-img">
+        <div class="nav-container calmer">
+          <a href="/index.html" class="logo">
+            <img src="/assets/logo.png" alt="RA Logo" id="logo-img">
             <span class="logo-text">Roads Authority<br><small>of Namibia</small></span>
           </a>
-          <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false"><span class="hamburger"></span></button>
+          <div class="nav-controls">
+            <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false"><span class="hamburger"></span></button>
+          </div>
           <ul class="nav-menu">
-            <li><a href="index.html#home" class="nav-link" data-transition="a">Home</a></li>
+            <li><a href="/index.html#home" class="nav-link" data-transition="a">Home</a></li>
             <li class="nav-item nav-dropdown">
               <button class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="about-menu">About RA <span class="caret">▾</span></button>
               <ul class="dropdown-menu" id="about-menu" role="menu" aria-label="About RA menu">
-                <li role="none"><a role="menuitem" href="background.html" class="nav-link">Background</a></li>
-                <li role="none"><a role="menuitem" href="corporate.html" class="nav-link">Corporate</a></li>
-                <li role="none"><a role="menuitem" href="board.html" class="nav-link">Board</a></li>
-                <li role="none"><a role="menuitem" href="committee.html" class="nav-link">Executive Committee</a></li>
-                <li role="none"><a role="menuitem" href="strategy.html" class="nav-link">Strategy</a></li>
+                <li role="none"><a role="menuitem" href="/background.html" class="nav-link">Background</a></li>
+                <li role="none"><a role="menuitem" href="/corporate.html" class="nav-link">Corporate</a></li>
+                <li role="none"><a role="menuitem" href="/board.html" class="nav-link">Board</a></li>
+                <li role="none"><a role="menuitem" href="/committee.html" class="nav-link">Executive Committee</a></li>
+                <li role="none"><a role="menuitem" href="/strategy.html" class="nav-link">Strategy</a></li>
               </ul>
             </li>
             <li class="nav-item nav-dropdown">
@@ -57,7 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <li role="none"><a role="menuitem" href="weighbridge.html" class="nav-link">Weighbridge</a></li>
                 <li role="none"><a role="menuitem" href="permits.html" class="nav-link">Permits</a></li>
               </ul>
-            </li>            <li class="nav-item nav-dropdown">
+            </li>
+            <li class="nav-item nav-dropdown">
               <button class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="careers-menu">Careers <span class="caret">▾</span></button>
               <ul class="dropdown-menu" id="careers-menu" role="menu" aria-label="Careers menu">
                 <li role="none"><a role="menuitem" href="vacancies.html" class="nav-link">Vacancies</a></li>
@@ -77,31 +80,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Ensure footer exists on all pages (inject if missing)
     (function ensureCanonicalFooter(){
-        if (document.querySelector('.footer')) return;
         const html = `
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
                     <div class="footer-logo">
-                        <img src="assets/logo.png" alt="RA Logo">
+                        <img src="/assets/logo.png" alt="RA Logo">
                         <h3>Roads Authority<br>of Namibia</h3>
                     </div>
                     <p class="footer-description">Constructing and maintaining Namibia's road sector for safety, efficiency, and economic development since our establishment.</p>
                     <div class="social-links">
-                        <a href="https://www.facebook.com/" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://twitter.com/" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.youtube.com/" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-                        <a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.facebook.com/" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="https://x.com/RANamibia" aria-label="X (Twitter)" target="_blank" rel="noopener noreferrer"><i class="fab fa-x" aria-hidden="true"></i></a>
+                        <a href="https://www.youtube.com/" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+                        <a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#network">Road Network</a></li>
+                        <li><a href="/index.html#home">Home</a></li>
+                        <li><a href="/index.html#network">Road Network</a></li>
                         <li><a href="permits.html">Permits</a></li>
                         <li><a href="weighbridge.html">Weighbridge</a></li>
-                        <li><a href="#natis">NATIS Centres</a></li>
+                        <li><a href="/index.html#natis">NATIS Centres</a></li>
                         <li><a href="news.html">News</a></li>
                         <li><a href="board.html">Board</a></li>
                         <li><a href="committee.html">Executive Committee</a></li>
@@ -142,18 +144,27 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="footer-bottom">
                 <p>&copy; 2026 Roads Authority of Namibia. All rights reserved. | <a href="privacy.html">Privacy Policy</a> | <a href="accessibility.html">Accessibility</a> | <a href="terms.html">Terms of Use</a></p>
                 <p class="affiliation">A Government Agency under the Ministry of Works and Transport</p>
+                <div class="footer-controls">
+                    <button class="theme-toggle" aria-label="Toggle theme" title="Toggle theme"><i class="fa-solid fa-moon" aria-hidden="true"></i> <span class="theme-text">Light</span></button>
+                </div>
             </div>
         </div>
         `.trim();
-        const footer = document.createElement('footer');
-        footer.className = 'footer';
-        footer.innerHTML = html;
-        document.body.appendChild(footer);
+        // Replace any existing footer(s) with canonical content for consistency
+        document.querySelectorAll('.footer').forEach(f => { f.innerHTML = html; });
+        // If no footer exists, append one to the end of the body
+        if (!document.querySelector('.footer')) {
+            const footer = document.createElement('footer');
+            footer.className = 'footer';
+            footer.innerHTML = html;
+            document.body.appendChild(footer);
+        }
     })();
 
     // Mobile Navigation Toggle
     const menuToggle = document.querySelector('.menu-toggle');
     const navMenu = document.querySelector('.nav-menu');
+    const themeToggle = document.querySelector('.theme-toggle');
     
     if (menuToggle) {
         menuToggle.addEventListener('click', function() {
@@ -163,6 +174,33 @@ document.addEventListener('DOMContentLoaded', function() {
             // Toggle aria-expanded attribute for accessibility (use string values)
             const isExpanded = this.classList.contains('active');
             this.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        });
+    }
+
+    // Theme toggle (light / dark)
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('ra_theme', theme);
+        if (themeToggle) {
+            // Display an icon and a short label to make the toggle's state clear
+            if (theme === 'dark') {
+                themeToggle.innerHTML = '<i class="fa-solid fa-sun" aria-hidden="true"></i> <span class="theme-text">Dark</span>';
+                themeToggle.setAttribute('aria-pressed', 'true');
+            } else {
+                themeToggle.innerHTML = '<i class="fa-solid fa-moon" aria-hidden="true"></i> <span class="theme-text">Light</span>';
+                themeToggle.setAttribute('aria-pressed', 'false');
+            }
+        }
+    }
+
+    // Initialize theme from preference or system
+    const savedTheme = localStorage.getItem('ra_theme');
+    if (savedTheme) applyTheme(savedTheme); else applyTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
         });
     }
     
@@ -1033,14 +1071,28 @@ document.addEventListener('DOMContentLoaded', function() {
     accordionToggles.forEach(btn => {
         btn.addEventListener('click', () => {
             const item = btn.closest('.accordion-item');
-            const content = item.querySelector('.accordion-content');
+            const content = item.querySelector('.accordion-panel');
+            if (!content) return;
+
+            const opening = !item.classList.contains('open');
             item.classList.toggle('open');
-            if (item.classList.contains('open')) {
-                content.style.maxHeight = content.scrollHeight + 'px';
-                btn.setAttribute('aria-expanded','true');
+            btn.setAttribute('aria-expanded', opening ? 'true' : 'false');
+
+            if (opening) {
+                // reveal: remove hidden (if present) then animate
+                content.removeAttribute('hidden');
+                // allow next frame to ensure transition
+                requestAnimationFrame(() => {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                });
             } else {
-                content.style.maxHeight = null;
-                btn.setAttribute('aria-expanded','false');
+                // hide: animate then set hidden after transition
+                content.style.maxHeight = content.scrollHeight + 'px';
+                requestAnimationFrame(() => {
+                    content.style.maxHeight = null;
+                });
+                const onEnd = () => { content.setAttribute('hidden',''); content.removeEventListener('transitionend', onEnd); };
+                content.addEventListener('transitionend', onEnd);
             }
         });
 
@@ -1486,6 +1538,73 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // register contact helpers when DOM is ready (script is loaded at end of body, so run now)
         try { registerContactWordLimits(); } catch(e){}
+
+        // Member bio popover: accessible hover/focus/tap tooltips for .member-card
+        (function memberBioPopovers(){
+            const pop = document.createElement('div');
+            pop.id = 'member-bio-popover';
+            pop.className = 'member-bio-popover';
+            pop.setAttribute('role','tooltip');
+            pop.setAttribute('aria-hidden','true');
+            document.body.appendChild(pop);
+
+            let activeTarget = null;
+            function showPopover(target){
+                const text = target.getAttribute('data-bio');
+                if (!text) return;
+                pop.textContent = text;
+                pop.setAttribute('aria-hidden','false');
+                activeTarget = target;
+                target.setAttribute('aria-describedby', pop.id);
+
+                // position popover near the target (try above, fall back below)
+                const rect = target.getBoundingClientRect();
+                pop.style.left = '0px'; pop.style.top = '0px'; // reset so offsetWidth is accurate
+                const popW = pop.offsetWidth;
+                const popH = pop.offsetHeight;
+                // center horizontally on target
+                let left = rect.left + (rect.width / 2) - (popW / 2) + window.scrollX;
+                // prefer above
+                let top = rect.top - popH - 12 + window.scrollY;
+                // if not enough space above, place below
+                if (top < window.scrollY + 8) top = rect.bottom + 12 + window.scrollY;
+                // clamp horizontally
+                left = Math.max(8 + window.scrollX, Math.min(left, window.scrollX + document.documentElement.clientWidth - popW - 8));
+                pop.style.left = `${Math.round(left)}px`;
+                pop.style.top = `${Math.round(top)}px`;
+
+                // visible state
+                pop.setAttribute('aria-hidden','false');
+            }
+            function hidePopover(target){
+                if (activeTarget) activeTarget.removeAttribute('aria-describedby');
+                activeTarget = null;
+                pop.setAttribute('aria-hidden','true');
+            }
+
+            // attach handlers
+            const members = Array.from(document.querySelectorAll('.member-card[data-bio]'));
+            members.forEach(m => {
+                // hover
+                m.addEventListener('mouseenter', ()=> showPopover(m));
+                m.addEventListener('mouseleave', ()=> hidePopover(m));
+                // focus / blur for keyboard access
+                m.addEventListener('focus', ()=> showPopover(m));
+                m.addEventListener('blur', ()=> hidePopover(m));
+                // click to toggle for touch users
+                m.addEventListener('click', (e)=>{
+                    // if popover already visible for this target, hide it
+                    if (activeTarget === m) { hidePopover(m); return; }
+                    showPopover(m);
+                });
+            });
+
+            // dismiss on escape or click outside
+            document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') hidePopover(); });
+            document.addEventListener('click', (e)=>{ if (!e.target.closest('.member-card') && !e.target.closest('.member-bio-popover')) hidePopover(); });
+            window.addEventListener('resize', ()=> { if (activeTarget) showPopover(activeTarget); });
+            window.addEventListener('scroll', ()=> { if (activeTarget) showPopover(activeTarget); }, { passive: true });
+        })();
 
     }
 
