@@ -31,14 +31,14 @@
                     </div>
                     <div style="max-width:420px;">
                         <div id="contact-map-wrap">
-                          <!-- The iframe will prefer the Google Maps Embed API if `window.GOOGLE_MAPS_API_KEY` is set.
-                               To enable the Embed API, copy `assets/google-maps-config.js.example` to
-                               `assets/google-maps-config.js` and set your API key in that file. -->
+                          <!-- Permanent embedded Google map iframe. If you set a Google Maps Embed API key (assets/google-maps-config.js),
+                               the loader script will update the iframe src to use the Embed API; otherwise the fallback embed is used. -->
+                          <iframe id="contact-map-iframe" src="https://www.google.com/maps?q=C3CJ%2BHFG%20Windhoek&output=embed" width="100%" height="300" style="border:0;border-radius:0.25rem;box-shadow:var(--shadow-md);" allowfullscreen="" loading="lazy"></iframe>
                           <noscript>
-                            <iframe src="https://www.google.com/maps?q=C3CJ%2BHFG%20Windhoek&output=embed" width="100%" height="300" style="border:0;border-radius:0.25rem;box-shadow:var(--shadow-md);" allowfullscreen="" loading="lazy"></iframe>
+                            <!-- If JS is disabled the iframe above will still be visible. -->
                           </noscript>
                         </div>
-                        <p style="margin-top:0.5rem;font-size:0.95rem"><a id="contact-map-link" href="https://www.google.com/maps?q=C3CJ%2BHFG%20Windhoek" target="_blank" rel="noopener">Open Roads Authority in Google Maps</a></p>
+                        <!-- <p style="margin-top:0.5rem;font-size:0.95rem"><a id="contact-map-link" href="https://maps.app.goo.gl/mLUk4B6hBAZ7KRYM8" target="_blank" rel="noopener">Open Roads Authority in Google Maps</a></p> -->
                     </div>
                 </div>
             </div>
@@ -107,29 +107,52 @@
     <script>
       // If user provides assets/google-maps-config.js and sets window.GOOGLE_MAPS_API_KEY,
       // use the Google Maps Embed API; otherwise fall back to a simple embed URL.
+      // This loader updates the existing iframe's src (if present) so the map remains embedded permanently.
       (function(){
         function loadEmbed(){
           const wrap = document.getElementById('contact-map-wrap');
           if (!wrap) return;
           const apiKey = (window.GOOGLE_MAPS_API_KEY || '').trim();
           const plus = 'C3CJ+HFG%20Windhoek';
-          const iframe = document.createElement('iframe');
-          iframe.width = '100%';
-          iframe.height = '300';
-          iframe.style.border = '0';
-          iframe.style.borderRadius = '0.25rem';
-          iframe.style.boxShadow = 'var(--shadow-md)';
-          iframe.loading = 'lazy';
-          if (apiKey && apiKey !== 'YOUR_GOOGLE_MAPS_EMBED_API_KEY_HERE') {
-            // Use Google Maps Embed API - requires API key
-            iframe.src = `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(apiKey)}&q=${plus}`;
+          const desiredSrc = apiKey && apiKey !== 'YOUR_GOOGLE_MAPS_EMBED_API_KEY_HERE'
+            ? `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(apiKey)}&q=${plus}`
+            : `https://www.google.com/maps?q=C3CJ%2BHFG%20Windhoek&output=embed`;
+
+          // If there's already an iframe (permanently embedded), update its src only.
+          let existing = wrap.querySelector('iframe#contact-map-iframe');
+          if (existing) {
+            existing.src = desiredSrc;
           } else {
-            // Fallback (no API key)
-            iframe.src = `https://www.google.com/maps?q=C3CJ%2BHFG%20Windhoek&output=embed`;
+            const iframe = document.createElement('iframe');
+            iframe.id = 'contact-map-iframe';
+            iframe.width = '100%';
+            iframe.height = '300';
+            iframe.style.border = '0';
+            iframe.style.borderRadius = '0.25rem';
+            iframe.style.boxShadow = 'var(--shadow-md)';
+            iframe.loading = 'lazy';
+            iframe.src = desiredSrc;
+            wrap.appendChild(iframe);
+          }
+
+          if (!apiKey || apiKey === 'YOUR_GOOGLE_MAPS_EMBED_API_KEY_HERE') {
+            // Keep a console message to help future debugging
             console.warn('Google Maps Embed API key not found. Using fallback embed. To use the Embed API, add assets/google-maps-config.js with your key.');
           }
-          wrap.innerHTML = '';
-          wrap.appendChild(iframe);
+
+          // Watch for accidental removal of the iframe and restore it if necessary.
+          // This helps keep the map visible even if another script or action clears the container.
+          if (!wrap._contactMapObserver) {
+            const observer = new MutationObserver((mutations) => {
+              if (!wrap.querySelector('iframe#contact-map-iframe')) {
+                console.info('contact-map-iframe removed; restoring.');
+                // Small delay to avoid thrashing during rapid DOM changes
+                setTimeout(loadEmbed, 50);
+              }
+            });
+            observer.observe(wrap, { childList: true });
+            wrap._contactMapObserver = observer;
+          }
         }
 
         // Try to load after DOM is ready

@@ -1,0 +1,65 @@
+name: Capture NATIS & Contact screenshots
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Puppeteer
+        run: npm install puppeteer --no-save
+
+      - name: Start static server (python)
+        run: |
+          python -m http.server 5500 &
+          echo "Server started on port 5500"
+
+      - name: Wait for server to become available
+        run: |
+          for i in {1..20}; do
+            if curl -sSf http://localhost:5500/index.html > /dev/null; then echo "server up"; exit 0; fi
+            sleep 1
+          done
+          echo "Server did not start in time"; exit 1
+
+      - name: Run screenshot capture script
+        run: node scripts/capture_screenshots.js
+
+      - name: List screenshots
+        run: ls -la screenshots || true
+
+      - name: Upload screenshots artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots
+
+      - name: Comment on PR with workflow run link
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const body = `📸 Screenshots captured — [view workflow run](${runUrl}) or download the **screenshots** artifact from the Actions run.`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body
+            });
